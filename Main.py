@@ -1,9 +1,14 @@
 # Beautiful soup 4 is used for finding the title, genres of the anime searched
 import bs4
+
 # Used to connect to the proposed url
 import urllib.request
+
 # Used for finding random numbers when asked
 from random import randint
+
+#For reading a file
+import time
 
 # Asks the user to input a number so we know what anime to start on
 # If the user is lazy then they can have the computer choose
@@ -71,6 +76,11 @@ def ReadOrWrite():
         if answer == "1" or answer == "2":
             return answer
 
+
+def getreq(num):
+    responsedef = urllib.request.urlopen("https://myanimelist.net/anime/" + str(num))
+    return responsedef
+
 RorW = ReadOrWrite()
 if RorW == "2":
     file = open("Anime", "w")
@@ -88,8 +98,7 @@ if RorW == "2":
         # Try-exception loop used due to the fact that some urls cannot be found
         try:
             # Connects to the url provided
-            response = urllib.request.urlopen("https://myanimelist.net/anime/" + str(count))
-
+            response = getreq(count)
             # Downloads and parses the html using beautiful soup and store in variable `soup`
             soup = bs4.BeautifulSoup(response, 'html.parser')
 
@@ -129,7 +138,9 @@ if RorW == "2":
                 break
     file.close()
 else:
-    file = open("Anime", "r")
-    textFromFile = file.read()
-    print(textFromFile)
-    file.close()
+    with open("Anime", "r") as file:
+        for line in file:
+            print(line)
+        time.sleep(0.5)
+        file.close()
+
